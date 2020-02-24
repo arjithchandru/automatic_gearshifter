@@ -1,0 +1,57 @@
+include 'emu8086.inc'
+    macro beep
+    mov dl,7h
+    mov ah,2
+    int 21h
+endm
+
+.model small
+.stack 64
+.code :    
+
+spd:
+   beep
+   mov ah,1
+   int 21h
+   cmp al,'e'
+   je e 
+   mov al,speed[0]
+   add al,10d
+   mov speed[0],al
+
+jmp spd
+
+mov dx,0
+cmp dx,30d
+jl upshift
+cmp dx,70d
+jl upshift
+cmp dx,100d
+jl upshift
+
+upshift:
+   mov al,gear[0]
+   add al,1d
+   mov gear[0],al
+  
+e:
+  mov al,speed[0]
+  mov ah,0
+  call print_num
+  
+  mov al,gear[0]
+  mov ah,0
+  call print_num
+       
+       
+       
+HLT    
+
+speed db 0 
+gear db 0
+gear1 db 0
+gear2 db 40d
+gear3 db 70d
+
+DEFINE_PRINT_NUM
+DEFINE_PRINT_NUM_UNS
